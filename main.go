@@ -2,7 +2,7 @@ package main
 
 //TODO
 // FIX ERROR HANDLING ON FLAGS
-// ADD SUDO WARNING "NEED SUDO ACCES"
+// ADD SUDO WARNING
 import (
 	"flag"
 	"fmt"
@@ -19,24 +19,23 @@ func main() {
 
 func commandFlow() {
 	flags()
-	// TODO move to tmp folder
 	writeToTmp(writeToTmp1string)
 
 	time.Sleep(time.Duration(checkDiffTimeInterval) * time.Second)
-	// TODO move to tmp folder
+
 	writeToTmp(writeToTmp2string)
 
 	readFile("d2.txt")
 	compareByteValues(readFile("d1.txt"), readFile("d2.txt"))
 }
 
-// MUST BE STRINGS
+// REQUIRED STRINGS
 var fileToWatch string
 var userDefinedCommand string
 var writeToTmp1string = "d1.txt"
 var writeToTmp2string = "d2.txt"
 
-// MUST BE INT
+// REQUIRED INT for time.Duration()
 var checkDiffTimeInterval int
 
 func flags() {
@@ -51,7 +50,7 @@ func flags() {
 
 }
 
-//CHECKS last time chosen file is modified
+//CHECKS when was the last time the file has been modified
 func dateLastModified() string {
 
 	execute, err := exec.Command("date", "-r", fileToWatch).Output()
@@ -62,14 +61,15 @@ func dateLastModified() string {
 		fmt.Println("")
 	}
 
-	//convert execute to type string
+	//convert execute(type []byte) to type string
+	//
 	str := fmt.Sprintf("%s", execute)
 
 	return str
 
 }
 
-// WRITES time to chosen file/s to compare times
+// WRITES time of last modification to chosen file
 
 func writeToTmp(file string) {
 
@@ -87,8 +87,6 @@ func writeToTmp(file string) {
 
 }
 
-//check for difference between "before" and "after" times in files
-
 func readFile(fileName string) []byte {
 	dat, err := ioutil.ReadFile(fileName)
 	if err != nil {
@@ -97,11 +95,11 @@ func readFile(fileName string) []byte {
 	return dat
 }
 
-// COMPARES THE VALUES OF BOTH TMP FILES
+// COMPARES THE VALUES OF BOTH TMP FILES (d1.txt, d2.txt)
 // used by userDefinedFunction
 func compareByteValues(a, b []byte) {
 	if reflect.DeepEqual(a, b) {
-		fmt.Println("Nothing to do") // CHECK AGAIN
+		fmt.Println("Nothing to do")
 	} else {
 		userDefinedFunction()
 	}
@@ -116,7 +114,7 @@ func userDefinedFunction() {
 	} else {
 		fmt.Println("command:", userDefinedCommand)
 	}
-	// fmt.Println("command:", userDefinedCommand)
+
 	str := fmt.Sprintf("%s", cmd)
 	fmt.Print(str)
 
