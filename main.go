@@ -107,9 +107,6 @@ func compareByteValues(a, b []byte) {
 	}
 }
 
-var quote string
-var tString []string
-
 // executes user defined command
 func userDefinedFunction() {
 
