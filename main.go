@@ -15,18 +15,21 @@ import (
 
 func main() {
 	commandFlow()
+
 }
 
 func commandFlow() {
 	flags()
-	writeToTmp(writeToTmp1string)
+	for {
+		writeToTmp(writeToTmp1string)
 
-	time.Sleep(time.Duration(checkDiffTimeInterval) * time.Second)
+		time.Sleep(time.Duration(checkDiffTimeInterval) * time.Second)
 
-	writeToTmp(writeToTmp2string)
+		writeToTmp(writeToTmp2string)
 
-	readFile("d2.txt")
-	compareByteValues(readFile("d1.txt"), readFile("d2.txt"))
+		readFile("d2.txt")
+		compareByteValues(readFile("d1.txt"), readFile("d2.txt"))
+	}
 }
 
 // REQUIRED STRINGS
@@ -40,11 +43,11 @@ var checkDiffTimeInterval int
 
 func flags() {
 
-	flag.StringVar(&fileToWatch, "f", "", "File To Watch")
+	flag.StringVar(&fileToWatch, "f", fileToWatch, "File To Watch")
 	if len(fileToWatch) < 0 {
 		fmt.Println("Please select a file to watch")
 	}
-	flag.StringVar(&userDefinedCommand, "c", "", "Command To Execute")
+	flag.StringVar(&userDefinedCommand, "c", userDefinedCommand, "Command To Execute")
 	flag.IntVar(&checkDiffTimeInterval, "t", 10, "Time Interval (Default is 10 seconds)")
 	flag.Parse()
 
@@ -108,11 +111,12 @@ func compareByteValues(a, b []byte) {
 // executes user defined command
 func userDefinedFunction() {
 
-	cmd, err := exec.Command("bash", "-c", userDefinedCommand).Output()
+	cmd, err := exec.Command("bash", "-c", userDefinedCommand).CombinedOutput()
 	if err != nil {
-		fmt.Println(`Please input a command within double quotes "' '" `)
+		fmt.Println("Output: ")
+		// fmt.Println(`Please input a command within double quotes "' '" `)
 	} else {
-		fmt.Println("command:", userDefinedCommand)
+		fmt.Println("command: ", cmd)
 	}
 
 	str := fmt.Sprintf("%s", cmd)
